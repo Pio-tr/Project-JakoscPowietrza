@@ -1,1 +1,5 @@
-
+Wymagania:
+- System Windows (64-bit)
+- Pobranie zip z linku: https://drive.google.com/file/d/1QwzxiJD_vljIbtYK6FSL7SRRbcr1YbtC/view?usp=sharing
+- Dostęp do Internetu (dla pobierania danych z API)
+- minimum 100MB wolnej pamięci na dysku
