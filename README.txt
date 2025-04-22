@@ -12,7 +12,7 @@ Jak uruchomić:
 3. Uruchom plik `JakoscPowietrza.exe`
 4. Wybierz stację pomiarową, parametr, daty i kliknij "Wygeneruj wykres"
 
-Dokumentacja jest zawarta w folderze ZIP "Dokumentacja"
+Dokumentacja Doxygen jest zawarta w folderze ZIP Dokumentacja.zip
 
 
 
