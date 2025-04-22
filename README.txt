@@ -2,7 +2,7 @@ Aplikacja: Jakość Powietrza
 Autor: Piotr Pyka
 
 Opis:
-Aplikacja umożliwia pobieranie danych o jakości powietrza z serwisu powietrze.gios.gov.pl
+Jest to aplikacja na Windowsa. Umożliwia pobieranie danych o jakości powietrza z serwisu powietrze.gios.gov.pl
 i ich wizualizację w formie wykresów. Pozwala wybrać stację pomiarową,
 parametr, zakres dat oraz generuje wykres wraz ze statystykami.
 
