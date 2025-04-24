@@ -66,6 +66,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     dateTimeFrom->setDateTime(QDateTime::currentDateTime().addDays(-1));
     dateTimeTo->setDateTime(QDateTime::currentDateTime());
+    dateTimeFrom->setMaximumDateTime(QDateTime::currentDateTime());
+    dateTimeTo->setMaximumDateTime(QDateTime::currentDateTime());
     updateUI();
     fetchDataFromUrl("https://api.gios.gov.pl/pjp-api/rest/station/findAll?sort=stationName");
 }
@@ -132,16 +134,11 @@ void MainWindow::fetchDataFromUrl(const QString &url)
  */
 void MainWindow::onGenerateClicked()
 {
-    QDateTime now = QDateTime::currentDateTime();
-    dateTimeFrom->setMaximumDateTime(now);
-    dateTimeTo->setMaximumDateTime(now);
+    dateTimeFrom->setMaximumDateTime(QDateTime::currentDateTime());
+    dateTimeTo->setMaximumDateTime(QDateTime::currentDateTime());
     QDateTime from = dateTimeFrom->dateTime();
     QDateTime to = dateTimeTo->dateTime();
 
-    if (from > to) {
-        QMessageBox::warning(this, "Błąd", "Data początkowa nie może być późniejsza od daty końcowej.");
-        return;
-    }
 
     int sensorId = comboBoxSensors->currentData().toInt();
     int stationId = comboBox->currentData().toInt();
@@ -156,7 +153,7 @@ void MainWindow::onGenerateClicked()
         QVector<QDateTime> timestamps;
 
         if (data.isEmpty()) {
-            QVector<DataPoint> offline = JsonStorage::loadMeasurements(stationId, sensorId);
+            QVector<DataPoint> offline = loadMeasurements(stationId, sensorId);
 
             QVector<DataPoint> filtered;
             for (const DataPoint &dp : std::as_const(offline)) {
@@ -203,7 +200,7 @@ void MainWindow::onGenerateClicked()
 
         window->setAttribute(Qt::WA_DeleteOnClose);
         window->show();
-        JsonStorage::saveMeasurements(stationId, sensorId, data);
+        saveMeasurements(stationId, sensorId, data);
         worker->deleteLater();
         thread->deleteLater();
     });
@@ -222,7 +219,7 @@ void MainWindow::onDataReceived(QNetworkReply *reply)
 {
     if (reply->error() != QNetworkReply::NoError) {
         if (currentStep == 1) {
-            QJsonArray stations = JsonStorage::loadStationList();
+            QJsonArray stations = loadStationList();
             if (stations.isEmpty()) {
                 QMessageBox::warning(this, "Brak połączenia", "Nie udało się pobrać danych z sieci.\nBrak zapisanych stacji.");
                 nextButton->setVisible(false);
@@ -237,7 +234,7 @@ void MainWindow::onDataReceived(QNetworkReply *reply)
             }
         } else if (!avoidWarning && currentStep == 2) {
             int stationId = comboBox->currentData().toInt();
-            QJsonArray sensors = JsonStorage::loadSensors(stationId);
+            QJsonArray sensors = loadSensors(stationId);
             if (sensors.isEmpty()) {
                 QMessageBox::warning(this, "Brak połączenia", "Nie udało się pobrać danych z sieci.\nBrak zapisanych danych dla wybranej stacji.");
                 currentStep = 1;
@@ -273,7 +270,7 @@ void MainWindow::onDataReceived(QNetworkReply *reply)
                     comboBox->addItem(name, stationId);
                 }
             }
-            JsonStorage::saveStation(jsonArray);
+            saveStation(jsonArray);
         }
         else if (currentStep == 2) {
             comboBoxSensors->clear();
@@ -285,7 +282,7 @@ void MainWindow::onDataReceived(QNetworkReply *reply)
                 comboBoxSensors->addItem(paramName, sensorId);
             }
             int stationId = comboBox->currentData().toInt();
-            JsonStorage::saveSensors(stationId, jsonArray);
+            saveSensors(stationId, jsonArray);
         }
     }
     else if (jsonDoc.isObject()) {
