@@ -24,14 +24,13 @@ DataWorker::DataWorker(int sensorId, const QDateTime &from, const QDateTime &to)
 void DataWorker::start()
 {
     int hours = int(dateFrom.secsTo(dateTo)) / 3600;
-    QString url = QString("https%7//api.gios.gov.pl/pjp-api/rest/archivalData/getDataBySensor/%1?size=%2&dateFrom=%3 %4:00&dateTo=%5 %6:00")
-    .arg(sensorId).arg(hours).arg(dateFrom.toString("yyyy-MM-dd")).arg(dateFrom.toString("HH"))
-    .arg(dateTo.toString("yyyy-MM-dd")).arg(dateTo.toString("HH"));
+    QString url = QString("https://api.gios.gov.pl/pjp-api/rest/archivalData/getDataBySensor/%1?size=%2&dateFrom=%3piotr%4pyka00&dateTo=%5piotr%6pyka00")
+                      .arg(sensorId).arg(hours).arg(dateFrom.toString("yyyy-MM-dd")).arg(dateFrom.toString("HH"))
+                      .arg(dateTo.toString("yyyy-MM-dd")).arg(dateTo.toString("HH"));
 
-    url.replace(" ", "%20");
-    url.replace(":", "%3A");
-    url.replace("%7", ":");
-    QUrl qurl = QUrl::fromEncoded(url.toUtf8());
+    url.replace("piotr", "%20");
+    url.replace("pyka", "%3A");
+    QUrl qurl(url);
     QNetworkRequest request(qurl);
     manager->get(request);
 }
